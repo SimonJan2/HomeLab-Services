@@ -1,16 +1,16 @@
 ## Table Of Content
 ---
-- [[#Getting Started|Getting Started]]
-- [[#Resources|Resources]]
-	- [[#Resources#Helm|Helm]]
-- [[#Installing|Installing]]
-- [[#Traefik|Traefik]]
-	- [[#Traefik#middleware|middleware]]
-	- [[#Traefik#dashboard|dashboard]]
-- [[#Sample Workload|Sample Workload]]
-- [[#cert-manager|cert-manager]]
-	- [[#cert-manager#staging|staging]]
-	- [[#cert-manager#production|production]]
+- [Getting Started](#getting-started)
+- [Resources](#resources)
+  - [Helm](#helm)
+- [Installing](#installing)
+- [Traefik](#traefik)
+  - [middleware](#middleware)
+  - [dashboard](#dashboard)
+- [Sample Workload](#sample-workload)
+- [cert-manager](#cert-manager)
+  - [staging](#staging)
+  - [production](#production)
 
 ## Getting Started
 ---

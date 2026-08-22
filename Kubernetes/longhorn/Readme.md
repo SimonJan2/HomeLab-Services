@@ -1,36 +1,36 @@
 ## Table Of Content
 ---
-- [[#Getting Started|Getting Started]]
-- [[#Resources|Resources]]
-	- [[#Resources#Helm|Helm]]
-	- [[#Resources#longhornctl (preflight checker)|longhornctl (preflight checker)]]
-- [[#Prerequisites Verification|Prerequisites Verification]]
-	- [[#Prerequisites Verification#Cluster connectivity|Cluster connectivity]]
-	- [[#Prerequisites Verification#Kubernetes version|Kubernetes version]]
-	- [[#Prerequisites Verification#iSCSI / NFS / disk on every node|iSCSI / NFS / disk on every node]]
-- [[#Preflight Check (optional, recommended)|Preflight Check (optional, recommended)]]
-	- [[#Preflight Check (optional, recommended)#Loading the kernel modules (recommended, do on every node)|Loading the kernel modules]]
-- [[#Installing Longhorn|Installing Longhorn]]
-	- [[#Installing Longhorn#Add the Longhorn Helm repository|Add the Longhorn Helm repository]]
-	- [[#Installing Longhorn#The values file|The values file]]
-	- [[#Installing Longhorn#Install with Helm|Install with Helm]]
-	- [[#Installing Longhorn#Confirm the deployment|Confirm the deployment]]
-- [[#Verifying the Installation|Verifying the Installation]]
-- [[#Setting Longhorn as the Default StorageClass|Setting Longhorn as the Default StorageClass]]
-- [[#Exposing the UI with Traefik + cert-manager|Exposing the UI with Traefik + cert-manager]]
-	- [[#Exposing the UI with Traefik + cert-manager#Directory layout|Directory layout]]
-	- [[#Exposing the UI with Traefik + cert-manager#TLS certificate|TLS certificate]]
-	- [[#Exposing the UI with Traefik + cert-manager#Basic auth secret|Basic auth secret]]
-	- [[#Exposing the UI with Traefik + cert-manager#Middlewares|Middlewares]]
-	- [[#Exposing the UI with Traefik + cert-manager#IngressRoute|IngressRoute]]
-	- [[#Exposing the UI with Traefik + cert-manager#Visit the UI|Visit the UI]]
-- [[#Sample Workload|Sample Workload]]
-	- [[#Sample Workload#Prove persistence|Prove persistence]]
-- [[#K3s-Specific Notes|K3s-Specific Notes]]
-- [[#Troubleshooting|Troubleshooting]]
-	- [[#Troubleshooting#API server / kube-vip VIP unreachable (`connection refused` to `10.100.102.175:6443`)|API server / kube-vip VIP unreachable]]
-	- [[#Troubleshooting#Wrong `csi.kubeletRootDir` — CSI driver never registers (PVCs stuck, pods stuck `ContainerCreating`)|Wrong kubeletRootDir]]
-- [[#Uninstall (optional)|Uninstall (optional)]]
+- [Getting Started](#getting-started)
+- [Resources](#resources)
+  - [Helm](#helm)
+  - [longhornctl (preflight checker)](#longhornctl-preflight-checker)
+- [Prerequisites Verification](#prerequisites-verification)
+  - [Cluster connectivity](#cluster-connectivity)
+  - [Kubernetes version](#kubernetes-version)
+  - [iSCSI / NFS / disk on every node](#iscsi--nfs--disk-on-every-node)
+- [Preflight Check (optional, recommended)](#preflight-check-optional-recommended)
+  - [Loading the kernel modules](#loading-the-kernel-modules-recommended-do-on-every-node)
+- [Installing Longhorn](#installing-longhorn)
+  - [Add the Longhorn Helm repository](#add-the-longhorn-helm-repository)
+  - [The values file](#the-values-file)
+  - [Install with Helm](#install-with-helm)
+  - [Confirm the deployment](#confirm-the-deployment)
+- [Verifying the Installation](#verifying-the-installation)
+- [Setting Longhorn as the Default StorageClass](#setting-longhorn-as-the-default-storageclass)
+- [Exposing the UI with Traefik + cert-manager](#exposing-the-ui-with-traefik--cert-manager)
+  - [Directory layout](#directory-layout)
+  - [TLS certificate](#tls-certificate)
+  - [Basic auth secret](#basic-auth-secret)
+  - [Middlewares](#middlewares)
+  - [IngressRoute](#ingressroute)
+  - [Visit the UI](#visit-the-ui)
+- [Sample Workload](#sample-workload)
+  - [Prove persistence](#prove-persistence)
+- [K3s-Specific Notes](#k3s-specific-notes)
+- [Troubleshooting](#troubleshooting)
+  - [API server / kube-vip VIP unreachable](#api-server--kube-vip-vip-unreachable-connection-refused-to-101001021756443)
+  - [Wrong kubeletRootDir](#wrong-csikubeletrootdir--csi-driver-never-registers-pvcs-stuck-pods-stuck-containercreating)
+- [Uninstall (optional)](#uninstall-optional)
 
 ## Getting Started
 ---
