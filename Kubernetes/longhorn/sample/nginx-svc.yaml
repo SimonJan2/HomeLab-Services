@@ -1,0 +1,20 @@
+---
+# ClusterIP Service for the nginx demo workload.
+# (We expose it via the IngressRoute, not via a LoadBalancer, to avoid
+#  consuming a MetalLB IP for a throwaway demo.)
+#
+# Apply with:
+#   kubectl apply -f sample/nginx-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-longhorn
+  namespace: default
+spec:
+  type: ClusterIP
+  selector:
+    app: nginx-longhorn
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

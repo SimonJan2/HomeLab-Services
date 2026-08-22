@@ -1,0 +1,32 @@
+---
+# Traefik Middlewares for the Longhorn UI, in the longhorn-system namespace.
+#
+# Apply with:
+#   kubectl apply -f ui/middleware.yaml
+#
+# Verify with:
+#   kubectl get middleware -n longhorn-system
+
+# 1) Basic-auth gate in front of the Longhorn UI (the UI has no built-in auth).
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: longhorn-auth
+  namespace: longhorn-system
+spec:
+  basicAuth:
+    # Secret must contain a key named `auth` with the htpasswd file content.
+    secret: basic-auth
+
+---
+# 2) Request buffering so large backing-image uploads (up to ~10 GB) work.
+#    Mirrors the official Longhorn Traefik ingress guide.
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: longhorn-buffering
+  namespace: longhorn-system
+spec:
+  buffering:
+    # 10,000 MB — allows backing image uploads from the Longhorn UI.
+    maxRequestBodyBytes: 10485760000

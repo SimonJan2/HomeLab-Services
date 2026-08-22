@@ -1,0 +1,32 @@
+---
+# Optional IngressRoute for the nginx demo, so you can hit it in a browser at:
+#   https://nginx-longhorn.local.simonlab.xyz
+#
+# It reuses the wildcard cert already present in the `default` namespace
+# (`local-simonlab-xyz-tls`, created by cert-manager) and the cluster-wide
+# `default-headers` Middleware (applied during the Traefik setup).
+#
+# Apply with:
+#   kubectl apply -f sample/nginx-ingressroute.yaml
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: nginx-longhorn
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`nginx-longhorn.local.simonlab.xyz`)
+      kind: Rule
+      services:
+        - name: nginx-longhorn
+          port: 80
+      middlewares:
+        - name: default-headers
+          namespace: default
+  tls:
+    # Reuse the wildcard cert already in the default namespace.
+    secretName: local-simonlab-xyz-tls

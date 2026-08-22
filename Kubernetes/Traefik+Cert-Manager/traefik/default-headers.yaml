@@ -1,0 +1,25 @@
+# This Middleware is written to be compatible with an older Traefik v2/early-v3 CRD schema.
+# It does NOT use the modern 'securityHeaders' block.
+
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: default-headers
+  namespace: default
+spec:
+  headers:
+    # --- Security Headers (flat structure for older CRDs) ---
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+    customFrameOptionsValue: "SAMEORIGIN"
+    # 'forceSTSHeader' is not needed when stsSeconds is set.
+
+    # --- Custom Headers ---
+    customRequestHeaders:
+      X-Forwarded-Proto: "https"
+    
+    customResponseHeaders:
+      X-Powered-By: ""

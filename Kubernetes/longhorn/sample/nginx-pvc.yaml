@@ -1,0 +1,24 @@
+---
+# PersistentVolumeClaim backed by Longhorn.
+# storageClassName: longhorn is the default SC after install, but we set it
+# explicitly here so the demo is unambiguous even if defaults change later.
+#
+# Apply with:
+#   kubectl apply -f sample/nginx-pvc.yaml
+#
+# Verify with:
+#   kubectl get pvc -n default
+#   kubectl get pv   # the dynamically provisioned PersistentVolume
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nginx-longhorn-pvc
+  namespace: default
+spec:
+  # Explicitly request Longhorn (the default SC after this guide).
+  storageClassName: longhorn
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

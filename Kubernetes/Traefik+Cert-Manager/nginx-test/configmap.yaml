@@ -1,0 +1,602 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-html
+  namespace: default
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Cosmic Dreamscape</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+        <style>
+            :root {
+                --cosmic-dark: #0a0118;
+                --cosmic-purple: #6b46c1;
+                --cosmic-pink: #ec4899;
+                --cosmic-blue: #3b82f6;
+                --cosmic-cyan: #06b6d4;
+                --cosmic-gold: #fbbf24;
+                --cosmic-white: #f9fafb;
+                --glass-bg: rgba(255, 255, 255, 0.05);
+                --glass-border: rgba(255, 255, 255, 0.1);
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'DM Sans', sans-serif;
+                background: var(--cosmic-dark);
+                color: var(--cosmic-white);
+                overflow-x: hidden;
+                cursor: none;
+            }
+
+            /* Custom Cursor */
+            .cursor {
+                position: fixed;
+                width: 20px;
+                height: 20px;
+                border: 2px solid var(--cosmic-cyan);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 10000;
+                transition: transform 0.15s ease, width 0.15s ease, height 0.15s ease;
+                mix-blend-mode: difference;
+            }
+
+            .cursor-follower {
+                position: fixed;
+                width: 8px;
+                height: 8px;
+                background: var(--cosmic-cyan);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 10000;
+                transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+                box-shadow: 0 0 20px var(--cosmic-cyan);
+            }
+
+            /* Animated Background */
+            .cosmic-bg {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 0;
+                overflow: hidden;
+            }
+
+            .aurora {
+                position: absolute;
+                width: 200%;
+                height: 200%;
+                top: -50%;
+                left: -50%;
+                background: 
+                    radial-gradient(ellipse at 20% 30%, var(--cosmic-purple) 0%, transparent 50%),
+                    radial-gradient(ellipse at 80% 70%, var(--cosmic-pink) 0%, transparent 50%),
+                    radial-gradient(ellipse at 50% 50%, var(--cosmic-blue) 0%, transparent 50%);
+                animation: aurora-dance 20s ease-in-out infinite;
+                opacity: 0.3;
+                filter: blur(80px);
+            }
+
+            @keyframes aurora-dance {
+                0%, 100% { transform: translate(0, 0) rotate(0deg); }
+                33% { transform: translate(-10%, 10%) rotate(120deg); }
+                66% { transform: translate(10%, -10%) rotate(240deg); }
+            }
+
+            .stars {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                background-image: 
+                    radial-gradient(2px 2px at 20% 30%, white, transparent),
+                    radial-gradient(2px 2px at 60% 70%, white, transparent),
+                    radial-gradient(1px 1px at 50% 50%, white, transparent),
+                    radial-gradient(1px 1px at 80% 10%, white, transparent),
+                    radial-gradient(2px 2px at 90% 60%, white, transparent),
+                    radial-gradient(1px 1px at 33% 80%, white, transparent);
+                background-size: 200% 200%;
+                animation: stars-twinkle 8s ease-in-out infinite;
+                opacity: 0.6;
+            }
+
+            @keyframes stars-twinkle {
+                0%, 100% { opacity: 0.6; }
+                50% { opacity: 0.3; }
+            }
+
+            .particles-container {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+            }
+
+            .particle {
+                position: absolute;
+                background: radial-gradient(circle, rgba(255, 255, 255, 0.8), transparent);
+                border-radius: 50%;
+                pointer-events: none;
+                animation: float-up 15s linear infinite;
+            }
+
+            @keyframes float-up {
+                0% { 
+                    transform: translateY(100vh) translateX(0);
+                    opacity: 0;
+                }
+                10% { opacity: 1; }
+                90% { opacity: 1; }
+                100% { 
+                    transform: translateY(-100px) translateX(100px);
+                    opacity: 0;
+                }
+            }
+
+            /* Main Content */
+            .container {
+                position: relative;
+                z-index: 1;
+                min-height: 100vh;
+                padding: 2rem;
+            }
+
+            /* Navigation */
+            nav {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 2rem 0;
+                animation: fade-slide-down 1s ease-out;
+            }
+
+            @keyframes fade-slide-down {
+                from {
+                    opacity: 0;
+                    transform: translateY(-30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .logo {
+                font-family: 'Playfair Display', serif;
+                font-size: 2rem;
+                font-weight: 900;
+                background: linear-gradient(135deg, var(--cosmic-cyan), var(--cosmic-pink), var(--cosmic-gold));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                letter-spacing: -0.02em;
+            }
+
+            .nav-links {
+                display: flex;
+                gap: 3rem;
+                list-style: none;
+            }
+
+            .nav-links a {
+                color: var(--cosmic-white);
+                text-decoration: none;
+                font-weight: 300;
+                font-size: 0.95rem;
+                letter-spacing: 0.05em;
+                position: relative;
+                transition: color 0.3s ease;
+            }
+
+            .nav-links a::after {
+                content: '';
+                position: absolute;
+                bottom: -5px;
+                left: 0;
+                width: 0;
+                height: 1px;
+                background: linear-gradient(90deg, var(--cosmic-cyan), var(--cosmic-pink));
+                transition: width 0.3s ease;
+            }
+
+            .nav-links a:hover {
+                color: var(--cosmic-cyan);
+            }
+
+            .nav-links a:hover::after {
+                width: 100%;
+            }
+
+            /* Hero Section */
+            .hero {
+                max-width: 1400px;
+                margin: 8rem auto;
+                text-align: center;
+                animation: fade-slide-up 1.2s ease-out 0.3s both;
+            }
+
+            @keyframes fade-slide-up {
+                from {
+                    opacity: 0;
+                    transform: translateY(50px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .hero h1 {
+                font-family: 'Playfair Display', serif;
+                font-size: clamp(3rem, 8vw, 7rem);
+                font-weight: 900;
+                line-height: 1.1;
+                margin-bottom: 2rem;
+                background: linear-gradient(135deg, var(--cosmic-white) 0%, var(--cosmic-cyan) 50%, var(--cosmic-pink) 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                letter-spacing: -0.03em;
+            }
+
+            .hero p {
+                font-size: clamp(1.1rem, 2vw, 1.5rem);
+                font-weight: 300;
+                line-height: 1.8;
+                max-width: 700px;
+                margin: 0 auto 3rem;
+                color: rgba(249, 250, 251, 0.7);
+                letter-spacing: 0.02em;
+            }
+
+            /* Glass Card */
+            .glass-card {
+                background: var(--glass-bg);
+                backdrop-filter: blur(20px);
+                border: 1px solid var(--glass-border);
+                border-radius: 24px;
+                padding: 3rem;
+                max-width: 1000px;
+                margin: 6rem auto;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+                animation: fade-scale-in 1s ease-out 0.6s both;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            @keyframes fade-scale-in {
+                from {
+                    opacity: 0;
+                    transform: scale(0.9);
+                }
+                to {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+
+            .glass-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 16px 64px rgba(6, 182, 212, 0.2);
+            }
+
+            .features-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 2rem;
+                margin-top: 3rem;
+            }
+
+            .feature {
+                text-align: center;
+                padding: 2rem;
+                border-radius: 16px;
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                transition: all 0.3s ease;
+            }
+
+            .feature:hover {
+                background: rgba(255, 255, 255, 0.07);
+                transform: translateY(-8px);
+                border-color: var(--cosmic-cyan);
+            }
+
+            .feature-icon {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+                display: inline-block;
+                animation: float 3s ease-in-out infinite;
+            }
+
+            .feature:nth-child(1) .feature-icon { animation-delay: 0s; }
+            .feature:nth-child(2) .feature-icon { animation-delay: 0.5s; }
+            .feature:nth-child(3) .feature-icon { animation-delay: 1s; }
+
+            @keyframes float {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
+            }
+
+            .feature h3 {
+                font-family: 'Playfair Display', serif;
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+                color: var(--cosmic-cyan);
+            }
+
+            .feature p {
+                font-size: 0.95rem;
+                line-height: 1.6;
+                color: rgba(249, 250, 251, 0.6);
+            }
+
+            /* CTA Button */
+            .cta-button {
+                display: inline-block;
+                padding: 1.2rem 3rem;
+                background: linear-gradient(135deg, var(--cosmic-cyan), var(--cosmic-purple));
+                color: white;
+                text-decoration: none;
+                border-radius: 50px;
+                font-weight: 500;
+                font-size: 1.1rem;
+                letter-spacing: 0.05em;
+                position: relative;
+                overflow: hidden;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3);
+            }
+
+            .cta-button::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+                transition: left 0.5s ease;
+            }
+
+            .cta-button:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 15px 40px rgba(6, 182, 212, 0.5);
+            }
+
+            .cta-button:hover::before {
+                left: 100%;
+            }
+
+            /* Footer */
+            footer {
+                text-align: center;
+                padding: 4rem 2rem;
+                margin-top: 6rem;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                animation: fade-in 1.5s ease-out 1s both;
+            }
+
+            @keyframes fade-in {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+
+            footer p {
+                color: rgba(249, 250, 251, 0.5);
+                font-size: 0.9rem;
+                letter-spacing: 0.05em;
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                body {
+                    cursor: default;
+                }
+                
+                .cursor, .cursor-follower {
+                    display: none;
+                }
+
+                .nav-links {
+                    gap: 1.5rem;
+                }
+
+                .hero {
+                    margin: 4rem auto;
+                }
+
+                .glass-card {
+                    padding: 2rem;
+                    margin: 4rem auto;
+                }
+
+                .features-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            /* Glow effect on scroll */
+            .glow-orb {
+                position: fixed;
+                width: 600px;
+                height: 600px;
+                background: radial-gradient(circle, var(--cosmic-pink) 0%, transparent 70%);
+                border-radius: 50%;
+                pointer-events: none;
+                filter: blur(100px);
+                opacity: 0.15;
+                z-index: 0;
+                transition: transform 0.3s ease;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Custom Cursor -->
+        <div class="cursor"></div>
+        <div class="cursor-follower"></div>
+
+        <!-- Cosmic Background -->
+        <div class="cosmic-bg">
+            <div class="aurora"></div>
+            <div class="stars"></div>
+            <div class="particles-container" id="particles"></div>
+        </div>
+
+        <!-- Glow Orb that follows scroll -->
+        <div class="glow-orb" id="glowOrb"></div>
+
+        <!-- Main Content -->
+        <div class="container">
+            <nav>
+                <div class="logo">NEXUS</div>
+                <ul class="nav-links">
+                    <li><a href="#explore">Explore</a></li>
+                    <li><a href="#discover">Discover</a></li>
+                    <li><a href="#connect">Connect</a></li>
+                </ul>
+            </nav>
+
+            <section class="hero">
+                <h1>Journey Beyond<br>The Stars</h1>
+                <p>Embark on an extraordinary voyage through the cosmos. Where imagination meets infinity, and dreams transcend reality.</p>
+                <a href="#" class="cta-button">Begin Your Journey</a>
+            </section>
+
+            <div class="glass-card">
+                <div class="features-grid">
+                    <div class="feature">
+                        <div class="feature-icon">✨</div>
+                        <h3>Ethereal Design</h3>
+                        <p>Experience interfaces that float between dimensions, crafted with meticulous attention to every pixel.</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">🌌</div>
+                        <h3>Cosmic Motion</h3>
+                        <p>Fluid animations that breathe life into every interaction, creating moments of pure digital poetry.</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">💫</div>
+                        <h3>Infinite Possibilities</h3>
+                        <p>Limitless creativity awaits in every corner, where boundaries dissolve and innovation thrives.</p>
+                    </div>
+                </div>
+            </div>
+
+            <footer>
+                <p>© 2026 NEXUS • Crafted in the Digital Cosmos</p>
+            </footer>
+        </div>
+
+        <script>
+            // Custom Cursor
+            const cursor = document.querySelector('.cursor');
+            const cursorFollower = document.querySelector('.cursor-follower');
+
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.transform = `translate(${e.clientX - 10}px, ${e.clientY - 10}px)`;
+                cursorFollower.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
+            });
+
+            // Cursor expand on hover over links
+            const interactiveElements = document.querySelectorAll('a, button');
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursor.style.width = '40px';
+                    cursor.style.height = '40px';
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursor.style.width = '20px';
+                    cursor.style.height = '20px';
+                });
+            });
+
+            // Particle System
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const size = Math.random() * 4 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+
+            // Glow Orb follows mouse with delay
+            const glowOrb = document.getElementById('glowOrb');
+            let mouseX = 0;
+            let mouseY = 0;
+            let orbX = 0;
+            let orbY = 0;
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            function animateOrb() {
+                orbX += (mouseX - orbX) * 0.05;
+                orbY += (mouseY - orbY) * 0.05;
+                
+                glowOrb.style.transform = `translate(${orbX - 300}px, ${orbY - 300}px)`;
+                
+                requestAnimationFrame(animateOrb);
+            }
+
+            animateOrb();
+
+            // Smooth scroll reveal
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -100px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.feature').forEach(feature => {
+                feature.style.opacity = '0';
+                feature.style.transform = 'translateY(30px)';
+                feature.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(feature);
+            });
+
+            // Parallax effect on scroll
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const aurora = document.querySelector('.aurora');
+                const stars = document.querySelector('.stars');
+                
+                aurora.style.transform = `translate(-50%, -50%) rotate(${scrolled * 0.05}deg)`;
+                stars.style.transform = `translateY(${scrolled * 0.3}px)`;
+            });
+        </script>
+    </body>
+    </html>

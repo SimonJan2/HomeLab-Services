@@ -1,0 +1,42 @@
+---
+# Nginx Deployment that uses the Longhorn PVC, proving dynamic provisioning +
+# replication work end-to-end. After it is Running, write a file into the
+# mounted volume, then delete the pod; a new pod will pick up the same PVC and
+# the file will still be there (that is Longhorn replicating the data).
+#
+# Apply with:
+#   kubectl apply -f sample/nginx-deployment.yaml
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: nginx-longhorn
+  namespace: default
+  labels:
+    app: nginx-longhorn
+spec:
+  replicas: 1
+  # Recreate (not RollingUpdate) so a new pod only starts once the old one
+  # releases the RWO volume. With 3 replicas of the volume on the Longhorn
+  # side, the new pod can attach from any node.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: nginx-longhorn
+  template:
+    metadata:
+      labels:
+        app: nginx-longhorn
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: html
+              mountPath: /usr/share/nginx/html
+      volumes:
+        - name: html
+          persistentVolumeClaim:
+            claimName: nginx-longhorn-pvc

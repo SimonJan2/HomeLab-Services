@@ -1,0 +1,30 @@
+---
+# Cert-manager Certificate that issues the wildcard *.local.simonlab.xyz cert
+# INTO the longhorn-system namespace, so the Traefik IngressRoute's
+# `tls.secretName: local-simonlab-xyz-tls` resolves in-namespace (Traefik
+# looks up the TLS secret in the same namespace as the IngressRoute by default).
+#
+# This reuses the existing `letsencrypt-production` ClusterIssuer (Cloudflare
+# DNS-01) already configured in the cluster. The cert auto-renews.
+#
+# Apply with:
+#   kubectl apply -f certificate.yaml
+#
+# Watch with:
+#   kubectl get certificate -n longhorn-system -w
+#   kubectl describe certificate local-simonlab-xyz -n longhorn-system
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: local-simonlab-xyz
+  namespace: longhorn-system
+spec:
+  # Secret created in the longhorn-system namespace; referenced by the IngressRoute.
+  secretName: local-simonlab-xyz-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: "*.local.simonlab.xyz"
+  dnsNames:
+    - "local.simonlab.xyz"
+    - "*.local.simonlab.xyz"

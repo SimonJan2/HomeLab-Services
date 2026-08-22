@@ -1,0 +1,45 @@
+---
+# Traefik IngressRoute exposing the Longhorn UI at:
+#   https://longhorn-ui.local.simonlab.xyz
+#
+# This mirrors the pattern used for the Traefik dashboard (IngressRoute CRD +
+# `kubernetes.io/ingress.class: traefik-external` annotation + websecure
+# entrypoint + a TLS secret in the same namespace).
+#
+# Prerequisites (apply in this order — see the guide):
+#   1. certificate.yaml               (issues local-simonlab-xyz-tls into longhorn-system)
+#   2. ui/secret-basic-auth.yaml       (htpasswd credentials for the basic-auth middleware)
+#   3. ui/middleware.yaml              (longhorn-auth + longhorn-buffering)
+#   4. ui/ingressroute.yaml            (this file)
+#
+# Apply with:
+#   kubectl apply -f ui/ingressroute.yaml
+#
+# Verify with:
+#   kubectl get ingressroute -n longhorn-system
+#   kubectl describe ingressroute longhorn-frontend -n longhorn-system
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: longhorn-frontend
+  namespace: longhorn-system
+  # Use the annotation form (matches the rest of this cluster's IngressRoutes).
+  annotations:
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`longhorn-ui.local.simonlab.xyz`)
+      kind: Rule
+      services:
+        - name: longhorn-frontend
+          port: 80
+      middlewares:
+        - name: longhorn-auth
+          namespace: longhorn-system
+        - name: longhorn-buffering
+          namespace: longhorn-system
+  tls:
+    # Secret created by certificate.yaml in the longhorn-system namespace.
+    secretName: local-simonlab-xyz-tls

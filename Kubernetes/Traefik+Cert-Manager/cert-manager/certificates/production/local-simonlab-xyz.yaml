@@ -1,0 +1,15 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: local-simonlab-xyz
+  namespace: default
+spec:
+  secretName: local-simonlab-xyz-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: "*.local.simonlab.xyz"
+  dnsNames:
+  - "local.simonlab.xyz"
+  - "*.local.simonlab.xyz"

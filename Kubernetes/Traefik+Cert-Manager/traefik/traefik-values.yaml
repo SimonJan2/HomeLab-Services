@@ -1,0 +1,64 @@
+global:
+  sendAnonymousUsage: false
+  checkNewVersion: false
+
+additionalArguments:
+  - "--serversTransport.insecureSkipVerify=true"
+  - "--log.level=INFO"
+
+deployment:
+  enabled: true
+  replicas: 3
+  annotations: {}
+  podAnnotations: {}
+  additionalContainers: []
+  initContainers: []
+
+ports:
+  web:
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          priority: 10
+  websecure:
+    http3:
+      enabled: true
+      advertisedPort: 4443
+    http:
+      tls:
+        enabled: true
+
+ingressRoute:
+  dashboard:
+    enabled: false
+
+providers:
+  kubernetesCRD:
+    enabled: true
+    ingressClass: traefik-external
+    allowExternalNameServices: true
+  kubernetesIngress:
+    enabled: true
+    allowExternalNameServices: true
+    publishedService:
+      enabled: false
+
+rbac:
+  enabled: true
+
+service:
+  enabled: true
+  type: LoadBalancer
+  annotations: {}
+  labels: {}
+  spec:
+    loadBalancerIP: 10.100.102.181 # this should be an IP in the MetalLB range
+  loadBalancerSourceRanges: []
+  externalIPs: []
+
+# Command to install traefik
+# helm install traefik traefik/traefik --namespace traefik --create-namespace --values traefik-values.yaml
+
+# command to check traefik status
+# kubectl get svc --all-namespaces -o wide

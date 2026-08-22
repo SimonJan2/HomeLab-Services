@@ -1,0 +1,92 @@
+---
+# Longhorn Helm values for the K3s homelab cluster.
+# Install with:
+#   helm install longhorn longhorn/longhorn \
+#     --namespace longhorn-system --create-namespace \
+#     --version 1.12.1 \
+#     --values longhorn-values.yaml
+#
+# Verified against chart version 1.12.1 (`helm show values longhorn/longhorn --version 1.12.1`).
+
+# ---------------------------------------------------------------------------
+# Persistence / default StorageClass
+# ---------------------------------------------------------------------------
+persistence:
+  # Create the default Longhorn StorageClass on install.
+  createStorageClass: true
+  # Make Longhorn the DEFAULT StorageClass (K3s's `local-path` is demoted manually, see the guide).
+  defaultClass: true
+  # V1 Data Engine — mature, low-resource, fits the 1.6–3.3 GB nodes in this homelab.
+  dataEngine: v1
+  # Default filesystem for the default StorageClass.
+  defaultFsType: ext4
+  # 3 replicas across the 6-node cluster for redundancy.
+  defaultClassReplicaCount: 3
+  # Disabled by default — leave it; enable later if you pin workloads to specific nodes.
+  defaultDataLocality: disabled
+  # Retain PVs when their PVC is deleted (safer for a homelab than the chart default `Delete`).
+  # Delete PVs manually with `kubectl delete pv <name>` after you are sure the data is gone.
+  reclaimPolicy: Retain
+  volumeBindingMode: "Immediate"
+  # Disable the revision counter (default in v1.12+; salvaging uses file metadata instead).
+  disableRevisionCounter: "true"
+  migratable: false
+  nfsOptions: ""
+
+# ---------------------------------------------------------------------------
+# CSI / K3s-specific kubelet root directory
+# ---------------------------------------------------------------------------
+csi:
+  # K3s v1.36+ (Ubuntu 26.04) uses the STANDARD kubelet root dir /var/lib/kubelet,
+  # NOT the older K3s-specific /var/lib/rancher/k3s/agent/kubelet.
+  # Setting this explicitly ensures the CSI plugin puts its registration socket
+  # where the kubelet is actually watching. Verify on a node with:
+  #   ls /var/lib/kubelet/pods  (should have pod dirs if this is the right path)
+  kubeletRootDir: "/var/lib/kubelet"
+
+# ---------------------------------------------------------------------------
+# Longhorn default settings (cluster-wide, applied on install)
+# ---------------------------------------------------------------------------
+defaultSettings:
+  # Default host path used to store replica data. This MUST match the mount
+  # the Ansible playbook created: /dev/sdb -> /var/lib/longhorn (ext4).
+  defaultDataPath: "/var/lib/longhorn/"
+  # Stop scheduling new replicas on a disk once available space drops below 25%.
+  storageMinimalAvailablePercentage: 25
+  # Allow over-provisioning up to 100% of disk capacity (chart default).
+  storageOverProvisioningPercentage: 100
+  # Automatically re-attach volumes after a node reboot / crash.
+  autoSalvage: true
+  # Keep at least one engine instance alive per node even when no volume is attached.
+  # Disable on very small nodes if the manager CPU reservation is too high.
+  guaranteedInstanceManagerCPU: false
+  # Disable the in-UI "a new Longhorn version is available" upgrade checker banner.
+  upgradeChecker: false
+  # Disable anonymous usage metrics collection (telemetry to Longhorn's Upgrade Responder).
+  allowCollectingLonghornUsageMetrics: false
+  # Allow recurring snapshot/backup jobs to run even while a volume is detached.
+  allowRecurringJobWhileVolumeDetached: false
+
+# ---------------------------------------------------------------------------
+# Longhorn UI
+# ---------------------------------------------------------------------------
+longhornUI:
+  # 2 replicas for HA behind Traefik. Reduce to 1 on memory-constrained clusters.
+  replicas: 2
+
+# ---------------------------------------------------------------------------
+# Ingress — DISABLED. We expose the UI with our own Traefik IngressRoute
+# (see ui/ingressroute.yaml) so we can reuse the existing `traefik-external`
+# IngressClass, the wildcard *.local.simonlab.xyz cert, and basic-auth middleware.
+# The chart's built-in Ingress uses standard networking.k8s.io/v1 + ingressClassName
+# and does not match this cluster's annotation-based pattern.
+# ---------------------------------------------------------------------------
+ingress:
+  enabled: false
+
+# We use the bundled HTTPRoute/Gateway API support? No — same reason as ingress.
+httproute:
+  enabled: false
+
+# Pod Security Policy is deprecated/removed in Kubernetes >= 1.25; leave false.
+enablePSP: false
