@@ -14,3 +14,13 @@ Desktop.ini
 *.swp
 *.swo
 *~
+
+
+# Kubernetes secrets (template files, not actual secrets)
+secret-to-copy.yaml
+secret-dashboard.yaml
+secret-cf-token.yaml
+letsencrypt-production.yaml
+letsencrypt-staging.yaml
+secret-tls.yaml
+secret-basic-auth.yaml
