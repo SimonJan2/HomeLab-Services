@@ -123,8 +123,8 @@ secret-to-copy.yaml
 ```yaml
 apiVersion: v1
 data:
-  tls.crt: REDACTED
-  tls.key: REDACTED
+  tls.crt: ReplaceWithYourBase64EncodedCertificate
+  tls.key: ReplaceWithYourBase64EncodedPrivateKey
 kind: Secret
 metadata:
   annotations:
@@ -214,7 +214,7 @@ metadata:
   namespace: traefik
 type: Opaque
 data:
-  users: REDACTED
+  users: ReplaceWithYourBase64EncodedCredentials
 ```
 
 default-headers.yaml
@@ -675,7 +675,7 @@ metadata:
   namespace: cert-manager
 type: Opaque
 stringData:
-  cloudflare-token: REDACTED # be sure you are generating an API token and not a global API key https://cert-manager.io/docs/configuration/acme/dns01/cloudflare/#api-tokens
+  cloudflare-token: ReplaceWithYourCloudflareAPIToken # be sure you are generating an API token and not a global API key https://cert-manager.io/docs/configuration/acme/dns01/cloudflare/#api-tokens
 ```
 
 values.yaml
