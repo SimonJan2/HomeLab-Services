@@ -5,3 +5,4 @@ letsencrypt-production.yaml
 letsencrypt-staging.yaml
 secret-tls.yaml
 secret-basic-auth.yaml
+.DS_Store
